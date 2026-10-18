@@ -1,0 +1,5 @@
+dist/
+launcher/bin/doom-str
+launcher/bin/doompad
+*.wad
+*.WAD
