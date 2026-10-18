@@ -39,6 +39,7 @@ for f in $OPL; do SRC="$SRC opl/$f.c"; done
 
 (cd doompad && GOOS=linux GOARCH=arm GOARM=5 CGO_ENABLED=0 "$GO" build -trimpath -ldflags="-s -w" -o ../dist/doompad .)
 
+mkdir -p launcher/bin
 cp dist/doom-str dist/doompad launcher/bin/
 VERSION=${VERSION:-dev}
 for target in windows/amd64 darwin/arm64 darwin/amd64 linux/amd64 linux/arm64; do
