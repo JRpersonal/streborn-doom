@@ -5,14 +5,20 @@
 //	str-doom <speaker-ip>          play (title screen, skip starts a game)
 //	str-doom stop <speaker-ip>     end a running game
 //	str-doom learn <speaker-ip>    print the codes of your remote's keys
+//
+// Started without any arguments (a double-click on Windows), it asks for the
+// speaker's address and waits for Enter before it exits, so the window stays
+// open long enough to read.
 package main
 
 import (
+	"bufio"
 	"bytes"
 	_ "embed"
+	"errors"
 	"flag"
 	"fmt"
-
+	"io"
 	"os"
 	"strings"
 )
@@ -52,6 +58,26 @@ func main() {
 	flag.Usage = usage
 	flag.Parse()
 	args := flag.Args()
+
+	// No arguments at all: most likely a double-click. Ask for the address
+	// and keep the window open at the end.
+	interactive := len(os.Args) == 1
+	stdin := bufio.NewReader(os.Stdin)
+	exit := func(code int) {
+		if interactive {
+			waitForEnter(stdin, os.Stdout)
+		}
+		os.Exit(code)
+	}
+	if interactive {
+		host, err := askHost(stdin, os.Stdout)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "str-doom:", err)
+			exit(1)
+		}
+		args = []string{host}
+	}
+
 	cmd := "play"
 	if len(args) == 2 && (args[0] == "stop" || args[0] == "learn") {
 		cmd, args = args[0], args[1:]
@@ -63,8 +89,32 @@ func main() {
 	host := args[0]
 	if err := run(cmd, host, *wadPath, *vol, *lat, *ir); err != nil {
 		fmt.Fprintln(os.Stderr, "str-doom:", err)
-		os.Exit(1)
+		exit(1)
 	}
+	exit(0)
+}
+
+// askHost asks for the speaker's address until it gets a non-empty line.
+func askHost(r *bufio.Reader, w io.Writer) (string, error) {
+	for {
+		fmt.Fprint(w, "Speaker IP address: ")
+		line, err := r.ReadString('\n')
+		if host := strings.TrimSpace(line); host != "" {
+			return host, nil
+		}
+		if err != nil {
+			if errors.Is(err, io.EOF) {
+				return "", errors.New("no speaker address given")
+			}
+			return "", err
+		}
+	}
+}
+
+// waitForEnter keeps a double-clicked window open until Enter is pressed.
+func waitForEnter(r *bufio.Reader, w io.Writer) {
+	fmt.Fprint(w, "\nPress Enter to close.")
+	_, _ = r.ReadString('\n')
 }
 
 func run(cmd, host, wadPath string, vol, lat int, ir string) error {
@@ -74,7 +124,7 @@ func run(cmd, host, wadPath string, vol, lat int, ir string) error {
 	}
 	fmt.Printf("Speaker: %s (%s), STR %s\n", info.Name, info.Model, info.Version)
 	if !strings.Contains(info.Model, "Portable") {
-		fmt.Println("Note: only the SoundTouch Portable is tested. The 20, 30 and Wave have the same display; tell us how it goes.")
+		fmt.Println("Note: only the SoundTouch Portable is tested. The 20 and 30 have the same display; tell me how it goes.")
 	}
 	sh, err := connect(host, info)
 	if err != nil {
