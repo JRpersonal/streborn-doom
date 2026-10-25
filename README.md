@@ -85,7 +85,7 @@ All of it is undone when the game ends. To get there it uses SSH, which STR can 
 
 ## Other models
 
-The SoundTouch 20 and 30 have the same 128 by 100 display and may just work. Their remotes may send other key codes: run `str-doom learn <ip>`, press each key once, and pass the codes the game needs with `-ir`, for example `-ir e7=3,27=24`. Then please tell me what you found with the ["Tried it on my model"](https://github.com/JRpersonal/streborn-doom/issues/new?template=tried-it.yml) form.
+The SoundTouch 20 and 30 have the same 128 by 100 display and may just work. Their remotes may send other key codes. Run `str-doom learn <ip>`, press each key once, and pass the codes the game needs with `-ir`, for example `-ir e7=3,27=24`. Then please tell me what you found with the ["Tried it on my model"](https://github.com/JRpersonal/streborn-doom/issues/new?template=tried-it.yml) form.
 
 ## How it is built
 
