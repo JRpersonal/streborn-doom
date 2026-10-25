@@ -1,0 +1,55 @@
+name: Tried it on my model
+description: Tell me how DOOM ran on your SoundTouch, good or bad.
+title: "Tried it on my model: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for trying it. Every report helps, especially from the SoundTouch 20 and 30, which I could not test myself.
+        Please leave out your speaker's IP address, serial number and anything else personal.
+  - type: dropdown
+    id: model
+    attributes:
+      label: Speaker model
+      options:
+        - SoundTouch Portable
+        - SoundTouch 20
+        - SoundTouch 30
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: str-version
+    attributes:
+      label: STR version on the speaker
+      description: The STR app shows it, for example v1.0.23.
+      placeholder: v1.0.23
+    validations:
+      required: true
+  - type: input
+    id: computer-os
+    attributes:
+      label: Your computer
+      description: Operating system you ran str-doom on.
+      placeholder: Windows 11, macOS 15 (Apple silicon), Ubuntu 24.04, ...
+    validations:
+      required: true
+  - type: textarea
+    id: learn
+    attributes:
+      label: Output of str-doom learn
+      description: Run `str-doom learn <speaker-ip>`, press each key of your remote once, and paste what it prints.
+      render: text
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: Did the title screen show up, did the keys work, was there sound and music?
+    validations:
+      required: true
+  - type: textarea
+    id: photo
+    attributes:
+      label: Photo (optional)
+      description: A photo of the display mid-game. Drag it in here.

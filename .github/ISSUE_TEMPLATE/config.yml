@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Questions and chat
+    url: https://github.com/JRpersonal/streborn/discussions/categories/arcade
+    about: Ask in the STR Arcade discussions.
